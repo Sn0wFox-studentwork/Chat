@@ -1,25 +1,31 @@
 package chat.client;
 
-import java.rmi.AccessException;
+import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Calendar;
 import java.util.Scanner;
 
 import chat.protocol.Message;
 import chat.server.ChatServer;
 import chat.server.ChatServerItf;
 
-public class ChatClient implements ChatClientItf {
+public class ChatClient implements ChatClientItf, Serializable {
 	// Attributs
 	private String username;
-	private Registry registry;
+	private Registry registry; 
 	public static final String SERVER_JREFERENCE = "server";
 	
-	public ChatClient(String s) throws RemoteException {
-		registry = LocateRegistry.getRegistry();
+	public ChatClient(String s) {
+		try {
+			registry = LocateRegistry.getRegistry();
+		} catch (RemoteException e) {
+			System.out.println("Failed to locate RMI registry in ChatClient constructor");
+			e.printStackTrace();
+		}
 		this.username = s;
 	}
 	
@@ -45,52 +51,58 @@ public class ChatClient implements ChatClientItf {
 	
 	public static void main(String[] args)
 	{
-		// TODO :	Mettre le code principal du ChatClient
 		Scanner sc = new Scanner(System.in);
-		String s = sc.nextLine();
-		ChatClient client = null;
-		try {
-			client = new ChatClient(s);
-			client.join();
-		}
-		catch (RemoteException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
-		while (s != "exit") {
-			s = sc.nextLine();
+		System.out.println("Entrez votre pseudo :");
+		String s = sc.nextLine();
+		
+		ChatClient client = new ChatClient(s);
+		ChatClientItf remoteClientInterface;
+		try {
+			remoteClientInterface = (ChatClientItf)UnicastRemoteObject.exportObject(client, 0);
+			remoteClientInterface.join();
 			try {
 				ChatServerItf csi = (ChatServerItf) client.getRegistry().lookup(SERVER_JREFERENCE);
 			} catch (RemoteException | NotBoundException e) {
-				// TODO Auto-generated catch block
+				System.out.println("Error while looking for server.");
 				e.printStackTrace();
 			}
+			
+			while (true) {
+				s = null;
+				s = sc.nextLine();
+				if(s.contains("exit"))
+				{
+					break;
+				}
+				client.sendMessage(s);
+			}
+			System.out.println("Leave procedure engaged");
+			remoteClientInterface.leave();
+			UnicastRemoteObject.unexportObject(remoteClientInterface, true);
+		} catch (RemoteException e1) {
+			System.out.println("Client main error : " + e1);
+			e1.printStackTrace();
 		}
+
+		sc.close();
+		
 	}
 	
 	public void join()
 	{
 		// On recupere le serveur RMI courant
 		try {			
-			// On bind l'objet
-			ChatClientItf stub = (ChatClientItf) UnicastRemoteObject.exportObject(this, 0);
-			registry.bind(username, stub);
-			
 			// On recupere le serveur pour s'enregistrer aupres de la liste des serveurs
 			ChatServerItf stubServ = (ChatServerItf) registry.lookup(SERVER_JREFERENCE);
-			stubServ.addChatClient(username);
+			stubServ.addChatClient(this);
 		}
 		catch (RemoteException e) {
-			System.err.println("Failed to locate RMI-Registry");
+			System.err.println("Client error : " + e);
 			e.printStackTrace();
 		}
 		catch (NotBoundException e) {
 			System.err.println("ChatServer not found bound at " + SERVER_JREFERENCE);
-			e.printStackTrace();
-		}
-		catch (java.rmi.AlreadyBoundException e) {
-			System.err.println(username + " already bound");
 			e.printStackTrace();
 		}
 	}
@@ -100,9 +112,8 @@ public class ChatClient implements ChatClientItf {
 		// On recupere le serveur RMI courant
 		try {			
 			// On recupere le serveur pour se desenregistrer
-			ChatServer stubServ = (ChatServer) registry.lookup(SERVER_JREFERENCE);
-			stubServ.removeChatClient(username);
-			registry.unbind(username);
+			ChatServerItf stubServ = (ChatServerItf) registry.lookup(SERVER_JREFERENCE);
+			stubServ.removeChatClient(this);
 		}
 		catch (RemoteException e) {
 			System.err.println("Failed to locate RMI-Registry");
@@ -114,9 +125,25 @@ public class ChatClient implements ChatClientItf {
 		}
 	}
 	
-	// Implments from RemotableChatClient
+	public void sendMessage(String s)
+	{
+		try {			
+			// On recupere le serveur pour se desenregistrer
+			ChatServerItf stubServ = (ChatServerItf) registry.lookup(SERVER_JREFERENCE);
+			stubServ.sendMessageToAll(new Message(s, username));
+		}
+		catch (RemoteException e) {
+			System.err.println("Failed to locate RMI-Registry in sendMessage");
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			System.err.println("ChatServer not found bound at " + SERVER_JREFERENCE);
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
 	public void printMessage(Message msg)
 	{
-		System.out.println(msg.getMessage());
+		System.out.println(msg);
 	}
 }

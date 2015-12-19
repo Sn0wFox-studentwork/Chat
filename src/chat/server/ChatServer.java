@@ -6,18 +6,17 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
-import java.util.List;
 
+import chat.client.ChatClient;
 import chat.client.ChatClientItf;
 import chat.protocol.Message;
-import chat.protocol.MessageItf;
 
 public class ChatServer implements ChatServerItf {
-	private LinkedList<String> clientList;
+	private LinkedList<ChatClientItf> clientList;
 	private Registry registry;
 
 	public ChatServer() throws RemoteException {
-		clientList = new LinkedList<String>();
+		clientList = new LinkedList<ChatClientItf>();
     	LocateRegistry.createRegistry(1099);
         registry = LocateRegistry.getRegistry();
 	}
@@ -30,7 +29,7 @@ public class ChatServer implements ChatServerItf {
             ChatServerItf chi = (ChatServerItf) UnicastRemoteObject.exportObject(cs, 0);
             cs.registry.bind("server", chi);
            
-            System.err.println("Server ready");
+            System.out.println("Server ready");
         }
 		catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
@@ -40,20 +39,18 @@ public class ChatServer implements ChatServerItf {
 
 	@Override
 	public void sendMessageToAll(Message msg) throws RemoteException, NotBoundException {
-		ChatClientItf cci = null;
-		for ( String user : clientList ) {
-			cci = (ChatClientItf) registry.lookup(user);
-			cci.printMessage(msg);
+		for ( ChatClientItf user : clientList ) {
+			user.printMessage(msg);
 		}
 	}
 
 	@Override
-	public void addChatClient(String user) {
+	public void addChatClient(ChatClientItf user) {
 		clientList.add(user);
 	}
 
 	@Override
-	public void removeChatClient(String user) {
+	public void removeChatClient(ChatClientItf user) {
 		clientList.remove(user);
 	}
 
