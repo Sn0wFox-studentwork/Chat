@@ -9,7 +9,4 @@ import chat.protocol.Message;
 public interface ChatClientItf extends Remote
 {
 	void printMessage(Message msg) throws RemoteException;
-	void join() throws RemoteException;
-	void leave() throws RemoteException;
-
 }

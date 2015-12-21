@@ -1,33 +1,17 @@
-/***
- * ClientThread
- * Example of a TCP server
- * Date: 14/12/08
- * Authors:
- */
+package socketChat.server;
 
 import java.io.*;
 import java.net.*;
 import java.lang.*;
 
-public class ReceptionThread extends Thread {
+public class ReceptionServeurThread extends Thread {
   
   private Socket clientSocket;
+  private EchoServer es;
   
-  ClientThread(Socket s) {
+  ReceptionServeurThread(EchoServer es, Socket s) {
     this.clientSocket = s;
-  }
-
-  public void sendMessageToAll(String m) {
-    PrintStream socOut;
-    for (Socket cs : EchoServer.clientList) {
-      try {
-        socOut = new PrintStream(cs.getOutputStream());
-        socOut.println(m);
-      }    
-      catch (Exception e) {
-            System.err.println("Error in sendMessageToAll:" + e);
-      }
-    }
+    this.es = es;
   }
 
   /**
@@ -41,15 +25,14 @@ public class ReceptionThread extends Thread {
           new InputStreamReader(clientSocket.getInputStream()));    
         PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
         while (true) {
-          String line = socIn.readLine();
-          System.out.println(line);
-          socOut.println(line);
+          String line = socIn.readLine(); // Bloquant jusqu'à ligne entrée
+          es.sendMessage(line);
         }
       } catch (Exception e) {
           System.err.println("Error in EchoServer:" + e); 
         }
-       }
-  
   }
+  
+}
 
   

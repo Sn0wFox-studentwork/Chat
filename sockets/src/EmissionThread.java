@@ -1,12 +1,10 @@
-/***
- * ClientThread
- * Example of a TCP server
- * Date: 14/12/08
- * Authors:
- */
+package socketChat;
 
 import java.io.*;
 import java.net.*;
+
+import socketChat.server.EchoServer;
+
 import java.lang.*;
 
 public class ReceptionServerThread extends Thread {

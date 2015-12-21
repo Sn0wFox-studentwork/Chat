@@ -1,9 +1,4 @@
-/***
- * EchoClient
- * Example of a TCP client 
- * Date: 10/01/04
- * Authors:
- */
+package socketChat.client;
 
 import java.io.*;
 import java.net.*;

@@ -24,8 +24,8 @@ public class ChatServer implements ChatServerItf {
 	public static void main(String[] args) {
 		try {
 			ChatServer cs = new ChatServer();
-			// Launching and getting RMI register
 			
+			// Launching and getting RMI register
             ChatServerItf chi = (ChatServerItf) UnicastRemoteObject.exportObject(cs, 0);
             cs.registry.bind("server", chi);
            

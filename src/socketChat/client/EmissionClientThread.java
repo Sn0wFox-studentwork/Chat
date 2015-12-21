@@ -1,9 +1,4 @@
-/***
- * ClientThread
- * Example of a TCP server
- * Date: 14/12/08
- * Authors:
- */
+package socketChat.client;
 
 import java.io.*;
 import java.net.*;

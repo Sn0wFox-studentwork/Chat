@@ -6,11 +6,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Calendar;
 import java.util.Scanner;
 
 import chat.protocol.Message;
-import chat.server.ChatServer;
 import chat.server.ChatServerItf;
 
 public class ChatClient implements ChatClientItf, Serializable {
@@ -43,9 +41,6 @@ public class ChatClient implements ChatClientItf, Serializable {
 	// Setters
 	public void setPseudo(String newPseudo)
 	{
-		// TODO :	ne pas oublier de changer le nom dans la liste de clients
-		//			du serveur, et de rebind avec le nouveau username !
-		//			OU : ne pas laisser la possibilité de changer de pseudo
 		username = newPseudo;
 	}
 	
@@ -60,7 +55,7 @@ public class ChatClient implements ChatClientItf, Serializable {
 		ChatClientItf remoteClientInterface;
 		try {
 			remoteClientInterface = (ChatClientItf)UnicastRemoteObject.exportObject(client, 0);
-			remoteClientInterface.join();
+			client.join();
 			try {
 				ChatServerItf csi = (ChatServerItf) client.getRegistry().lookup(SERVER_JREFERENCE);
 			} catch (RemoteException | NotBoundException e) {
@@ -78,7 +73,7 @@ public class ChatClient implements ChatClientItf, Serializable {
 				client.sendMessage(s);
 			}
 			System.out.println("Leave procedure engaged");
-			remoteClientInterface.leave();
+			client.leave();
 			UnicastRemoteObject.unexportObject(remoteClientInterface, true);
 		} catch (RemoteException e1) {
 			System.out.println("Client main error : " + e1);
@@ -86,12 +81,10 @@ public class ChatClient implements ChatClientItf, Serializable {
 		}
 
 		sc.close();
-		
 	}
 	
 	public void join()
 	{
-		// On recupere le serveur RMI courant
 		try {			
 			// On recupere le serveur pour s'enregistrer aupres de la liste des serveurs
 			ChatServerItf stubServ = (ChatServerItf) registry.lookup(SERVER_JREFERENCE);
