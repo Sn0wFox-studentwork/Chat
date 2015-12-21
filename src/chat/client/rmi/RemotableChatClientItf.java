@@ -1,4 +1,4 @@
-package chat.client;
+package chat.client.rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -6,7 +6,7 @@ import java.rmi.registry.Registry;
 
 import chat.protocol.Message;
 
-public interface ChatClientItf extends Remote
+public interface RemotableChatClientItf extends Remote
 {
 	void printMessage(Message msg) throws RemoteException;
 }
