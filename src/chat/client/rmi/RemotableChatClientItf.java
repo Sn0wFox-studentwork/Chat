@@ -8,5 +8,5 @@ import chat.protocol.Message;
 
 public interface RemotableChatClientItf extends Remote
 {
-	void printMessage(Message msg) throws RemoteException;
+	void printMessage(String msg) throws RemoteException;
 }

@@ -5,19 +5,111 @@ import java.net.*;
 
 import chat.client.AbstractClient;
 import chat.protocol.Message;
+import chat.view.Observer;
 
 public class ChatClientSocket extends AbstractClient
 {
 
+	// ---------------------------------------------------- Attributs
+	private Socket echoSocket;
+	private EmissionClientThread ect;
+	private ReceptionClientThread rct;
+	
+	// ---------------------------------------------------- Constructeur
 	public ChatClientSocket(String username)
 	{
 		super(username);
+		echoSocket = null;
+		ect= null;
+		rct = null;
+	}
+	
+	// ---------------------------------------------------- Implementations interfaces publiques
+	@Override
+	public void join(String hostIP, int port)
+	{
+		try
+		{
+			// creation socket ==> connexion
+			echoSocket = new Socket(hostIP, port);
+			rct = new ReceptionClientThread(this, echoSocket);
+			System.out.println("Un ReceptionClientThread a ete cree");
+			rct.start();
+		}
+		catch (UnknownHostException e)
+		{
+			System.err.println("Don't know about host:" + hostIP);
+			System.exit(1);
+		}
+		catch (IOException e)
+		{
+			System.err.println("Couldn't get I/O for the connection to:" + hostIP);
+			System.exit(1);
+		}
 	}
 
-	/**
-	 * main method accepts a connection, receives a message from client then
-	 * sends an echo to the client
-	 **/
+	@Override
+	public void leave()
+	{
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void sendMessage(Message msg)
+	{
+		System.out.println("Le client " + username + " recois le message : " + msg);
+		try
+		{
+			System.out.println("On l'ecrit dans sa socket pour le transferer au ReceptionServerThread");
+			PrintStream socOut = new PrintStream(echoSocket.getOutputStream());
+			socOut.println(msg);
+		}
+		catch (IOException e)
+		{
+			System.err.println("Error in ChatClientSocket sendMessage : " +e);
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void printMessage(String msg)
+	{
+		System.out.println("client.printMessage recoit le message :");
+		System.out.println(msg);
+		System.out.println("On le tansmet a client.notifyObserver");
+		notifyObserver(msg);
+	}
+
+	@Override
+	public void setUsername(String newUsername)
+	{
+		username = newUsername;
+	}
+	
+	@Override
+	public void addObserver(Observer obs)
+	{
+		observersList.add(obs);
+	}
+
+	@Override
+	public void removeObserver(Observer obs)
+	{
+		observersList.remove(obs);
+	}
+
+	@Override
+	public void notifyObserver(String msg)
+	{
+		System.out.println("client.notifyObserver recoit le message : " + msg);
+		System.out.println(observersList.size() + " vues vont etre mises a jour pour " + username);
+		for(Observer obs : observersList)
+		{
+			obs.update(msg);
+		}
+	}
+
+	// ---------------------------------------------------- Fonction principale
 	public static void main(String[] args) throws IOException
 	{
 		ChatClientSocket chatClientSocket = new ChatClientSocket("TODO");
@@ -49,40 +141,5 @@ public class ChatClientSocket extends AbstractClient
 			System.exit(1);
 		}
 
-	}
-
-	@Override
-	public void join(String hostIP, int port)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void leave()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void sendMessage(Message msg)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void printMessage(Message msg)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setUsername(String newUsername)
-	{
-		// TODO Auto-generated method stub
-		
 	}
 }

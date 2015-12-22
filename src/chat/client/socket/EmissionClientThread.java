@@ -17,22 +17,18 @@ import java.lang.*;
 
 public class EmissionClientThread extends Thread
 {
-
+	// ---------------------------------------------------- Attributs
 	private ChatClientSocket chatClientSocket;
 	private Socket echoSocket;
 
+	// ---------------------------------------------------- Constructeur
 	EmissionClientThread(ChatClientSocket chatClientSocket, Socket echoSocket)
 	{
 		this.echoSocket = echoSocket;
 		this.chatClientSocket = chatClientSocket;
 	}
 
-	/**
-	 * receives a request from client then sends an echo to the client
-	 * 
-	 * @param clientSocket
-	 *            the client socket
-	 **/
+	// ---------------------------------------------------- Methodes publiques
 	public void run()
 	{
 		try
@@ -55,7 +51,7 @@ public class EmissionClientThread extends Thread
 
 		} catch (Exception e)
 		{
-			System.err.println("Error in ChatServerSocket:" + e);
+			System.err.println("Error in EmissionClientThread:" + e);
 		}
 
 	}

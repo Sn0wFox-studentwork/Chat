@@ -51,7 +51,7 @@ public class ChatServerRMI implements ChatServerItf
 		System.out.println("Il va etre transmis a " + clientList.size() + " clients");
 		for (RemotableChatClientItf user : clientList)
 		{
-			user.printMessage(msg);
+			user.printMessage(msg.toString());
 		}
 	}
 

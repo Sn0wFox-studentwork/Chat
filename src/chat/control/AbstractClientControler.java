@@ -20,7 +20,7 @@ public abstract class AbstractClientControler implements Serializable
 	// ---------------------------------------------------- Methodes publiques
 	public void updateChat(Message msg)
 	{
-		client.printMessage(msg);
+		client.printMessage(msg.toString());
 	}
 	
 	public void removeClient()
@@ -32,10 +32,9 @@ public abstract class AbstractClientControler implements Serializable
 	public void sendMessageToClient(Message msg)
 	{
 		System.out.println(client.getUsername());
-		System.out.println("sendMessageToClient recois le message : " + msg);
-		System.out.println("on lenvoit a client.sendMessage");
+		System.out.println("AbstractClientControler.sendMessageToClient recois le message : " + msg);
+		System.out.println("on l'envoit a client.sendMessage");
 		client.sendMessage(msg);
-		// TODO : fonctionne avec notifyObserver
 	}
 	
 	// ---------------------------------------------------- Methodes publiques abstraites
@@ -43,6 +42,8 @@ public abstract class AbstractClientControler implements Serializable
 												String hostIP,
 												int port,
 												ViewClient view);
+	
+	public abstract void initEnable(ViewClient view);
 
 	
 	// ---------------------------------------------------- Methodes protegees

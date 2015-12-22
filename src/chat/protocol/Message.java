@@ -16,6 +16,7 @@ public class Message implements Serializable
 		this.username = u;
 		this.time = new Timestamp(System.currentTimeMillis());
 	}
+	
 
 	public String getMessage()
 	{

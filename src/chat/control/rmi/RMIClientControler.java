@@ -41,4 +41,12 @@ public class RMIClientControler extends AbstractClientControler
 		return client;
 	}
 
+	@Override
+	public void initEnable(ViewClient view)
+	{
+		view.getHostField().setEnabled(false);
+		view.getPortField().setEnabled(false);
+		view.setTitle("RMI chat");
+	}
+
 }

@@ -23,6 +23,8 @@ public class ChatClientRMI	extends AbstractClient
 {
 	// ---------------------------------------------------- Attributs
 	private Registry registry;
+	
+	// ---------------------------------------------------- Constantes de classe
 	public static final String SERVER_JREFERENCE = "server";
 
 	// ---------------------------------------------------- Constructeur
@@ -52,7 +54,7 @@ public class ChatClientRMI	extends AbstractClient
 	}
 	
 
-	// ---------------------------------------------------- Implementations interfaces
+	// ---------------------------------------------------- Implementations interfaces publiques
 
 	@Override
 	public void join(String hostIP, int port)
@@ -118,7 +120,7 @@ public class ChatClientRMI	extends AbstractClient
 	}	//------ Fin de sendMessage()
 
 	@Override
-	public void printMessage(Message msg)
+	public void printMessage(String msg)
 	{
 		System.out.println(username + " recois le message :");
 		System.out.println(msg);
@@ -145,7 +147,7 @@ public class ChatClientRMI	extends AbstractClient
 	}
 
 	@Override
-	public void notifyObserver(Message msg)
+	public void notifyObserver(String msg)
 	{
 		System.out.println(observersList.size() + " vues vont etre mises a jour pour " + username);
 		for(Observer obs : observersList)

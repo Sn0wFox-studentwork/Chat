@@ -16,21 +16,18 @@ public class ReceptionClientThread extends Thread
 		this.chatClientSocket = chatClientSocket;
 	}
 
-	/**
-	 * receives a request from client then sends an echo to the client
-	 * 
-	 * @param clientSocket
-	 *            the client socket
-	 **/
 	public void run()
 	{
 		try
 		{
 			BufferedReader socIn = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-
+			System.out.println("Un ReceptionClientThread a ete lance");
 			while (true)
 			{
 				String line = socIn.readLine();
+				System.out.println("ReceptionClientThread recoit le message : " + line);
+				System.out.println("On le transmet a client.printMessage");
+				chatClientSocket.printMessage(line);
 				if (line.length() != 0)
 				{
 					System.out.println("Echo:" + line);

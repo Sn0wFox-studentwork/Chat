@@ -36,7 +36,7 @@ public abstract class AbstractClient implements Observable, RemotableChatClientI
 	public abstract void join(String hostIP, int port);		// Se connecter au chat
 	public abstract void leave();							// Se deconnecter du chat
 	public abstract void sendMessage(Message msg);			// Envoyer un message
-	public abstract void printMessage(Message msg);			// Afficher un message
+	public abstract void printMessage(String msg);			// Afficher un message
 	public abstract void setUsername(String newUsername);	// Changer de pseudo
 	
 	// ---------------------------------------------------- Implementations interfaces
@@ -53,7 +53,7 @@ public abstract class AbstractClient implements Observable, RemotableChatClientI
 	}
 	
 	@Override
-	public void notifyObserver(Message msg)
+	public void notifyObserver(String msg)
 	{
 		for(Observer obs : observersList)
 		{

@@ -6,38 +6,37 @@ import java.lang.*;
 
 public class ReceptionServerThread extends Thread
 {
-
+	// ---------------------------------------------------- Attributs
 	private Socket clientSocket;
 	private ChatServerSocket es;
 
+	// ---------------------------------------------------- Constructeur
 	ReceptionServerThread(ChatServerSocket es, Socket s)
 	{
 		this.clientSocket = s;
 		this.es = es;
 	}
 
-	/**
-	 * receives a request from client then sends an echo to the client
-	 * 
-	 * @param clientSocket
-	 *            the client socket
-	 **/
+	// ---------------------------------------------------- Methodes publiques
 	public void run()
 	{
 		try
 		{
-			BufferedReader socIn = null;
-			socIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			System.out.println("Un receptionServerThread est lance");
+			BufferedReader socIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
 			while (true)
 			{
-				String line = socIn.readLine(); // Bloquant jusqu'à ligne
-												// entrée
-				es.sendMessage(line);
+				String line = socIn.readLine(); // Bloquant jusqu'a ligne entree
+				System.out.println("ReceptionServerThread recoit le message : " + line);
+				System.out.println("On l'envoit a sendMessageToAll");
+				es.sendMessageToAll(line);
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
-			System.err.println("Error in ChatServerSocket:" + e);
+			System.err.println("Error in ReceptionServerThread : " + e);
+			e.printStackTrace();
 		}
 	}
 

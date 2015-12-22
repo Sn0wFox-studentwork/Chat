@@ -9,6 +9,8 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -24,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -75,6 +78,7 @@ public class ViewClient extends JFrame implements Observer
 		// Init attributs
 		initializeComponents();
 		controler = ctrl;
+		controler.initEnable(this);
 
 		// Finalisation
 		setContentPane(globalPanel);
@@ -106,7 +110,7 @@ public class ViewClient extends JFrame implements Observer
 
 	// -------------- Implementation des interfaces publiques
 	@Override
-	public void update(Message msg)
+	public void update(String msg)
 	{
 		screenField.append("\n" + msg);
 		connectionButton.setEnabled(true);
@@ -153,8 +157,8 @@ public class ViewClient extends JFrame implements Observer
 			portField.setMaximumSize(new Dimension(LABEL_HOR_MIN_SIZE, VER_MIN_SIZE));
 			connectionPanel.add(portField);
 		connectionButton = new JButton("Connexion");
-			connectionButton.setMinimumSize(new Dimension(LABEL_HOR_MIN_SIZE + 10, VER_MIN_SIZE));
-			connectionButton.setMaximumSize(new Dimension(LABEL_HOR_MIN_SIZE + 10, VER_MIN_SIZE));
+			connectionButton.setMinimumSize(new Dimension(LABEL_HOR_MIN_SIZE + 25, VER_MIN_SIZE));
+			connectionButton.setMaximumSize(new Dimension(LABEL_HOR_MIN_SIZE + 25, VER_MIN_SIZE));
 			connectionButton.addActionListener(new ConnectionListener(this));
 			connectionPanel.add(connectionButton);
 
@@ -164,6 +168,9 @@ public class ViewClient extends JFrame implements Observer
 			screenField.setAutoscrolls(true);
 			screenField.setMinimumSize(new Dimension(WINDOW_WIDTH / 3, WINDOW_HEIGHT / 3));
 			screenPanel.add(screenField, BorderLayout.CENTER);
+		JScrollPane scroll = new JScrollPane(screenField, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scroll.setAutoscrolls(true);
+			screenPanel.add(scroll);
 
 		// Messages
 		pseudoLabel = new JLabel("Pseudo :");
@@ -180,13 +187,34 @@ public class ViewClient extends JFrame implements Observer
 			messageLabel.setMaximumSize(new Dimension(LABEL_HOR_MIN_SIZE, VER_MIN_SIZE));
 			sendingPanel.add(messageLabel);
 		messageField = new JTextField();
-			messageField.setMinimumSize(new Dimension(HOR_MIN_SIZE, VER_MIN_SIZE));
+			messageField.setMinimumSize(new Dimension(HOR_MIN_SIZE + 30, VER_MIN_SIZE));
 			messageField.setMaximumSize(new Dimension(WINDOW_WIDTH, VER_MIN_SIZE));
+			messageField.setText("Vous n'êtes pas encore connecté");
+			messageField.setEnabled(false);
+			messageField.addKeyListener(new SendingKeyListener());
 			sendingPanel.add(messageField);
 		sendButton = new JButton("Envoyer");
 			sendButton.addActionListener(new SendingListener());
+			sendButton.setEnabled(false);
 			sendingPanel.add(sendButton);
 
+	}
+	
+	// ---------------------------------------------------- Methodes privees
+	private void sendMessage()
+	{
+		System.out.println("Tentative d'envoie d'un message");
+		String username = pseudoField.getText();
+		String msg = messageField.getText();
+		if(username.length() == 0)
+		{
+			username = "Inconnu";
+		}
+		System.out.println("Le message est : " + new Message(msg, username));
+		System.out.println("On l'envoie a sendMessageToCLient");
+		controler.sendMessageToClient(new Message(msg, username));
+		messageField.setText("");
+		screenField.setCaretPosition(screenField.getDocument().getLength());
 	}
 	
 	// ---------------------------------------------------- Classes privees - Ecouteurs
@@ -216,14 +244,21 @@ public class ViewClient extends JFrame implements Observer
 				}
 				
 				// Creation d'un client
-				AbstractClient c = controler.addClient(username, serverIP, serverPort, obs);
+				controler.addClient(username, serverIP, serverPort, obs);
 				
+				// Autorisation d'envoie
 				connectionButton.setText("Deconnexion");
+				messageField.setText("");
+				messageField.setEnabled(true);
+				sendButton.setEnabled(true);
 			}
 			else
 			{
 				connectionButton.setText("Connexion");
 				controler.removeClient();
+				sendButton.setEnabled(false);
+				messageField.setEnabled(false);
+				messageField.setText("Vous n'êtes pas encore connecté");
 			}
 		}
 	}
@@ -233,19 +268,31 @@ public class ViewClient extends JFrame implements Observer
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			// Si on essaie d'envoyer un message via le bouton
-			System.out.println("Tentative d'envoie d'un message");
-			String username = pseudoField.getText();
-			String msg = messageField.getText();
-			if(username.length() == 0)
-			{
-				username = "Inconnu";
-			}
-			System.out.println("Le message est : " + new Message(msg, username));
-			System.out.println("On l'envoie a sendMessageToCLient");
-			controler.sendMessageToClient(new Message(msg, username));
+			sendMessage();
 		}
 		
+	}
+	
+	private class SendingKeyListener extends KeyAdapter
+	{
+		private boolean enterKey;
+		
+		public void keyPressed(KeyEvent e)
+		{
+			if(e.getKeyCode() == KeyEvent.VK_ENTER && !enterKey)
+			{
+				sendMessage();
+				enterKey = true;
+			}
+		}
+		
+		public void keyReleased(KeyEvent e)
+		{
+			if(e.getKeyCode() == KeyEvent.VK_ENTER)
+			{
+				enterKey = false;
+			}
+		}
 	}
 												
 	// ---------------------------------------------------- Fonction principale
@@ -264,8 +311,9 @@ public class ViewClient extends JFrame implements Observer
 			System.out.println("Controleur en mode RMI");
 			controler = new RMIClientControler();
 		}
-		else
+		else if(args[0].matches("-socket"))
 		{
+			System.out.println("Controleur en mode socket");
 			controler = new SocketClientControler();
 		}
 

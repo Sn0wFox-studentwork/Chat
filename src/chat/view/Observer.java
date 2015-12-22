@@ -4,5 +4,5 @@ import chat.protocol.Message;
 
 public interface Observer
 {
-	public void update(Message msg);
+	public void update(String msg);
 }

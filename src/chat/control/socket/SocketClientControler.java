@@ -8,20 +8,28 @@ import chat.view.ViewClient;
 
 public class SocketClientControler extends AbstractClientControler
 {
-
+	// ---------------------------------------------------- Constructeur
+	public SocketClientControler()
+	{
+		super();
+	}
+	
 	// ---------------------------------------------------- Surcharges methodes publiques
 	@Override
 	public AbstractClient addClient(String username, String hostIP, int port, ViewClient view)
 	{
-		ChatClientSocket client = new ChatClientSocket(username);
-		setClient(client);
+		ChatClientSocket c = new ChatClientSocket(username);
+		setClient(c);
+		client.addObserver(view);
+		client.join(hostIP, port);
 		return client;
 	}
 
 	@Override
-	public void sendMessageToClient(Message msg)
+	public void initEnable(ViewClient view)
 	{
-		// TODO Auto-generated method stub
+		view.getHostField().setEnabled(true);
+		view.getHostField().setText("127.0.0.1");
 	}
 
 }
