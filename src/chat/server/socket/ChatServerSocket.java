@@ -31,7 +31,7 @@ public class ChatServerSocket
 	
 	
 	// ---------------------------------------------------- Methodes publiques
-	public void sendMessageToAll(String msg)
+	public synchronized void sendMessageToAll(String msg)
 	{
 		System.out.println("sendMessageToAll recoit le message : " + msg);
 		try
@@ -73,14 +73,15 @@ public class ChatServerSocket
 				ReceptionServerThread rst = new ReceptionServerThread(this, clientSocket);
 				rst.start();
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			System.err.println("Error in addChatClient : " + e);
 			e.printStackTrace();
 		}
 	}
 	
-	public void removeChatClient(Socket user)
+	public synchronized void removeChatClient(Socket user)
 	{
 		clientList.remove(user);
 	}

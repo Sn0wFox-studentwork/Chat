@@ -5,6 +5,7 @@ import java.net.*;
 
 import chat.client.AbstractClient;
 import chat.protocol.Message;
+import chat.server.socket.ReceptionServerThread;
 import chat.view.Observer;
 
 public class ChatClientSocket extends AbstractClient
@@ -51,7 +52,16 @@ public class ChatClientSocket extends AbstractClient
 	@Override
 	public void leave()
 	{
-		// TODO Auto-generated method stub
+		rct.stop();				// TODO : deprecated
+		try
+		{
+			echoSocket.close();
+		}
+		catch (IOException e)
+		{
+			System.out.println("Error while trying to close the socket of the client " + username);
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -62,6 +72,10 @@ public class ChatClientSocket extends AbstractClient
 		{
 			System.out.println("On l'ecrit dans sa socket pour le transferer au ReceptionServerThread");
 			PrintStream socOut = new PrintStream(echoSocket.getOutputStream());
+			if(socOut.checkError())
+			{
+				
+			}
 			socOut.println(msg);
 		}
 		catch (IOException e)
@@ -72,7 +86,7 @@ public class ChatClientSocket extends AbstractClient
 	}
 
 	@Override
-	public void printMessage(String msg)
+	public synchronized void printMessage(String msg)
 	{
 		System.out.println("client.printMessage recoit le message :");
 		System.out.println(msg);

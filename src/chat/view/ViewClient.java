@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -33,7 +35,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-public class ViewClient extends JFrame implements Observer
+public class ViewClient extends JFrame implements Observer, WindowListener
 {
 	// ---------------------------------------------------- Constantes publiques
 	public final int WINDOW_WIDTH = (int) GraphicsEnvironment.getLocalGraphicsEnvironment()
@@ -85,6 +87,11 @@ public class ViewClient extends JFrame implements Observer
 		pack();
 		setMinimumSize(this.getSize());
 		setVisible(true);
+	}
+	
+	public void test()
+	{
+		
 	}
 
 	// ---------------------------------------------------- Methodes publiques
@@ -255,7 +262,7 @@ public class ViewClient extends JFrame implements Observer
 			else
 			{
 				connectionButton.setText("Connexion");
-				controler.removeClient();
+				controler.removeClient(obs);
 				sendButton.setEnabled(false);
 				messageField.setEnabled(false);
 				messageField.setText("Vous n'êtes pas encore connecté");
@@ -318,6 +325,55 @@ public class ViewClient extends JFrame implements Observer
 		}
 
 		ViewClient v = new ViewClient("Mon chat client", controler);
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0)
+	{
+		// Pour fermer proprement la fenetre client (sinon erreur lorsque close sans disconnect)
+		controler.removeClient(this);
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -2,6 +2,9 @@ package chat.client.socket;
 
 import java.io.*;
 import java.net.*;
+
+import javax.swing.JOptionPane;
+
 import java.lang.*;
 
 public class ReceptionClientThread extends Thread
@@ -34,9 +37,15 @@ public class ReceptionClientThread extends Thread
 				}
 			}
 
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
-			System.err.println("Error in ChatServerSocket:" + e);
+			System.err.println("Le serveur a ete deconnecte");
+			JOptionPane.showMessageDialog(null, "Le serveur a ete deconnecter. "
+					+ "Veuillez le reconnecter puis vous reconnecter.",
+					"Deconnexion serveur",
+					JOptionPane.YES_OPTION);
+			System.exit(1);
 		}
 
 	}

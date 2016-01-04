@@ -23,8 +23,9 @@ public abstract class AbstractClientControler implements Serializable
 		client.printMessage(msg.toString());
 	}
 	
-	public void removeClient()
+	public void removeClient(ViewClient view)
 	{
+		client.removeObserver(view);
 		client.leave();
 		client = null;
 	}
