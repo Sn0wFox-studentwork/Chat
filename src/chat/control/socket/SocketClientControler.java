@@ -15,6 +15,7 @@ public class SocketClientControler extends AbstractClientControler
 	}
 	
 	// ---------------------------------------------------- Surcharges methodes publiques
+
 	@Override
 	public AbstractClient addClient(String username, String hostIP, int port, ViewClient view)
 	{

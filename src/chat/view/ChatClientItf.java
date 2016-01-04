@@ -2,13 +2,37 @@ package chat.view;
 
 import chat.protocol.Message;
 
+/**
+ * Interface permettant la mise en place du pattern MVC.
+ * Elle definit toutes les methodes qu'un client du chat doit fournir.
+ */
 public interface ChatClientItf
-// Interface permettant la mise en place du pattern MVC.
-// Elle definie toutes les methodes qu'un client du chat doit fournir.
 {
-	public void join();								// Se connecter au chat
-	public void leave();							// Se deconnecter du chat
-	public void sendMessage(String msg);			// Envoyer un message
-	public void printMessage(Message msg);			// Afficher un message
-	public void setUsername(String newUsername);	// Changer de pseudo
+	/**
+	 *  Se connecter au chat
+	 */
+	public void join();
+
+	/**
+	 * Se deconnecter du chat
+	 */
+	public void leave();
+
+	/**
+	 * Envoyer un message
+	 * @param msg Message à envoyer
+     */
+	public void sendMessage(String msg);
+
+	/**
+	 * Afficher un message
+	 * @param msg Message à afficher
+     */
+    public void printMessage(Message msg);
+
+	/**
+	 * Changer de pseudo
+	 * @param newUsername Pseudo à changer
+     */
+    public void setUsername(String newUsername);
 }

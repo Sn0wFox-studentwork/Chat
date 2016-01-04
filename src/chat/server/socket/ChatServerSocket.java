@@ -14,6 +14,11 @@ public class ChatServerSocket
 	private ServerSocket listenSocket;
 	
 	// ---------------------------------------------------- Constructeur
+
+	/**
+	 *
+	 * @param port Port de la connexion du socket
+     */
 	public ChatServerSocket(int port)
 	{
 		clientList = new LinkedList<Socket>();
@@ -31,6 +36,11 @@ public class ChatServerSocket
 	
 	
 	// ---------------------------------------------------- Methodes publiques
+
+	/**
+	 * Envoie un message ? tous les clients du serveur
+	 * @param msg Message ? envoyer
+     */
 	public synchronized void sendMessageToAll(String msg)
 	{
 		System.out.println("sendMessageToAll recoit le message : " + msg);
@@ -60,7 +70,10 @@ public class ChatServerSocket
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Ajoute un client (socket + thread) au serveur
+	 */
 	public void addChatClient()
 	{
 		try
@@ -80,7 +93,11 @@ public class ChatServerSocket
 			e.printStackTrace();
 		}
 	}
-	
+
+    /**
+     * Supprime un client de la liste des clients du serveur
+     * @param user Socket du client ? supprimer
+     */
 	public synchronized void removeChatClient(Socket user)
 	{
 		clientList.remove(user);

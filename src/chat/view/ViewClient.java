@@ -124,6 +124,10 @@ public class ViewClient extends JFrame implements Observer, WindowListener
 	}
 
 	// ---------------------------------------------------- Methodes privees
+
+	/**
+	 * Initialise les composants de la fenÃªtre
+	 */
 	private void initializeComponents()
 	{
 		// Constantes
@@ -196,7 +200,7 @@ public class ViewClient extends JFrame implements Observer, WindowListener
 		messageField = new JTextField();
 			messageField.setMinimumSize(new Dimension(HOR_MIN_SIZE + 30, VER_MIN_SIZE));
 			messageField.setMaximumSize(new Dimension(WINDOW_WIDTH, VER_MIN_SIZE));
-			messageField.setText("Vous n'êtes pas encore connecté");
+			messageField.setText("Vous n'ï¿½tes pas encore connectï¿½");
 			messageField.setEnabled(false);
 			messageField.addKeyListener(new SendingKeyListener());
 			sendingPanel.add(messageField);
@@ -208,6 +212,10 @@ public class ViewClient extends JFrame implements Observer, WindowListener
 	}
 	
 	// ---------------------------------------------------- Methodes privees
+
+	/**
+	 * Envoie un message au controleur
+	 */
 	private void sendMessage()
 	{
 		System.out.println("Tentative d'envoie d'un message");
@@ -265,7 +273,7 @@ public class ViewClient extends JFrame implements Observer, WindowListener
 				controler.removeClient(obs);
 				sendButton.setEnabled(false);
 				messageField.setEnabled(false);
-				messageField.setText("Vous n'êtes pas encore connecté");
+				messageField.setText("Vous n'ï¿½tes pas encore connectï¿½");
 			}
 		}
 	}

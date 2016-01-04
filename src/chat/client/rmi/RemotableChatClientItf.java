@@ -8,5 +8,10 @@ import chat.protocol.Message;
 
 public interface RemotableChatClientItf extends Remote
 {
+	/**
+	 * Affiche un message
+	 * @param msg Message à afficher
+	 * @throws RemoteException
+     */
 	void printMessage(String msg) throws RemoteException;
 }

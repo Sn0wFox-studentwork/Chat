@@ -13,10 +13,13 @@ public class ReceptionClientThread extends Thread
 	private ChatClientSocket chatClientSocket;
 	private Socket echoSocket;
 
-	ReceptionClientThread(ChatClientSocket chatClientSocket, Socket echoSocket)
+	/**
+	 *
+	 * @param echoSocket Socket de réception de messages
+     */
+	ReceptionClientThread(Socket echoSocket)
 	{
 		this.echoSocket = echoSocket;
-		this.chatClientSocket = chatClientSocket;
 	}
 
 	public void run()

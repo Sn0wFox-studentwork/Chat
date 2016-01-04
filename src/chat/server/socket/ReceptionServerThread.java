@@ -11,11 +11,16 @@ public class ReceptionServerThread extends Thread
 	private ChatServerSocket es;
 
 	// ---------------------------------------------------- Constructeur
+
+	/**
+	 *
+	 * @param es Socket qui dispatch les nouvelles connections
+	 * @param s Socket d'Ã©mission/rÃ©ception avec un client
+     */
 	ReceptionServerThread(ChatServerSocket es, Socket s)
 	{
 		this.clientSocket = s;
 		this.es = es;
-		this.setDaemon(true);
 	}
 
 	// ---------------------------------------------------- Methodes publiques
@@ -34,7 +39,7 @@ public class ReceptionServerThread extends Thread
 				System.out.println("On l'envoit a sendMessageToAll");
 				es.sendMessageToAll(line);
 			}
-			// Procédure normale de déconnexion
+			// Procedure normale de deconnexion
 			socIn.close();
 			socOut.close();
 			// Fermeture du thread en fermant les sockets
@@ -51,7 +56,7 @@ public class ReceptionServerThread extends Thread
 			System.err.println("Error in ReceptionServerThread : " + e);
 			e.printStackTrace();
 		}
-		// Procédure en cas de fermeture forcée
+		// Procedure en cas de fermeture forcee
 		finally
 		{
 			if(clientSocket != null)

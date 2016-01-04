@@ -6,13 +6,13 @@ import java.lang.*;
 
 /* NOTES :
  * ... implements Java.lang.Runnable
-	– Avantages : L'héritage reste possible.
-	– Inconvénients : Les attributs de votre classe sont
-	partagés par tous les threads qui y sont basés (parfois un atout)
+	Avantages : L'heritage reste possible.
+	Inconvenients : Les attributs de votre classe sont
+	partages par tous les threads qui y sont bases (parfois un atout)
  *
  * ... extends Java.lang.Thread
-	– Avantages : Chaque thread a ses données qui lui sont propres.
-	– Inconvénients : On ne peut plus hériter d'une autre classe.
+	Avantages : Chaque thread a ses donnees qui lui sont propres.
+	Inconvenients : On ne peut plus heriter d'une autre classe.
  */
 
 public class EmissionClientThread extends Thread
@@ -22,10 +22,13 @@ public class EmissionClientThread extends Thread
 	private Socket echoSocket;
 
 	// ---------------------------------------------------- Constructeur
-	EmissionClientThread(ChatClientSocket chatClientSocket, Socket echoSocket)
+	/**
+	 *
+	 * @param echoSocket Socket d'Ã©mission de message
+	 */
+	EmissionClientThread(Socket echoSocket)
 	{
 		this.echoSocket = echoSocket;
-		this.chatClientSocket = chatClientSocket;
 	}
 
 	// ---------------------------------------------------- Methodes publiques

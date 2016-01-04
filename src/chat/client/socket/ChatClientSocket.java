@@ -12,19 +12,23 @@ public class ChatClientSocket extends AbstractClient
 {
 
 	// ---------------------------------------------------- Attributs
-	private Socket echoSocket;
+    private Socket echoSocket;
 	private EmissionClientThread ect;
 	private ReceptionClientThread rct;
-	
+
 	// ---------------------------------------------------- Constructeur
-	public ChatClientSocket(String username)
+    /**
+     * Constructeur du ChatClientSocket
+     * @param username Nom d'utilisateur du client
+     */
+    public ChatClientSocket(String username)
 	{
 		super(username);
 		echoSocket = null;
 		ect= null;
 		rct = null;
 	}
-	
+
 	// ---------------------------------------------------- Implementations interfaces publiques
 	@Override
 	public void join(String hostIP, int port)
@@ -33,7 +37,7 @@ public class ChatClientSocket extends AbstractClient
 		{
 			// creation socket ==> connexion
 			echoSocket = new Socket(hostIP, port);
-			rct = new ReceptionClientThread(this, echoSocket);
+			rct = new ReceptionClientThread(echoSocket);
 			System.out.println("Un ReceptionClientThread a ete cree");
 			rct.start();
 		}
@@ -99,7 +103,7 @@ public class ChatClientSocket extends AbstractClient
 	{
 		username = newUsername;
 	}
-	
+
 	@Override
 	public void addObserver(Observer obs)
 	{
@@ -141,8 +145,8 @@ public class ChatClientSocket extends AbstractClient
 		{
 			// creation socket ==> connexion
 			echoSocket = new Socket(args[0], new Integer(args[1]).intValue());
-			ect = new EmissionClientThread(chatClientSocket, echoSocket);
-			rct = new ReceptionClientThread(chatClientSocket, echoSocket);
+			ect = new EmissionClientThread(echoSocket);
+			rct = new ReceptionClientThread(echoSocket);
 			ect.start();
 			rct.start();
 		} catch (UnknownHostException e)
