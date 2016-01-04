@@ -1,5 +1,7 @@
 package chat.server.rmi;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -7,8 +9,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 
-import chat.client.AbstractClient;
-import chat.client.rmi.ChatClientRMI;
 import chat.client.rmi.RemotableChatClientItf;
 import chat.protocol.Message;
 
@@ -18,6 +18,10 @@ public class ChatServerRMI implements ChatServerItf
 	private Registry registry;
 	public final int SERVER_PORT = 1099;
 
+	/**
+	 * 
+	 * @throws RemoteException
+	 */
 	public ChatServerRMI() throws RemoteException
 	{
 		clientList = new LinkedList<RemotableChatClientItf>();
@@ -46,7 +50,22 @@ public class ChatServerRMI implements ChatServerItf
 	@Override
 	public void sendMessageToAll(Message msg) throws RemoteException, NotBoundException
 	{
+		// Log du message
+		try
+		{
+			if(!msg.isHistorique())
+			{
+				FileWriter writer = new FileWriter("rmichatlogfile.txt", true);
+				writer.write(msg + "\n");
+				writer.flush();
+			}
+		} catch (IOException e)
+		{
+			System.err.println("Error while opening log file");
+			e.printStackTrace();
+		}
 		
+		// Envoie a tout les clients
 		System.out.println("sendMessageToAll recois le message : " + msg);
 		System.out.println("Il va etre transmis a " + clientList.size() + " clients");
 		for (RemotableChatClientItf user : clientList)

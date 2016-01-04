@@ -263,6 +263,7 @@ public class ViewClient extends JFrame implements Observer, WindowListener
 				
 				// Autorisation d'envoie
 				connectionButton.setText("Deconnexion");
+				connectionButton.setEnabled(true);
 				messageField.setText("");
 				messageField.setEnabled(true);
 				sendButton.setEnabled(true);

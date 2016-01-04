@@ -1,12 +1,18 @@
 package chat.client.rmi;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import chat.client.AbstractClient;
@@ -64,6 +70,22 @@ public class ChatClientRMI	extends AbstractClient
 			// On recupere le serveur pour s'enregistrer aupres de la liste des clients
 			ChatServerItf stubServ = (ChatServerItf) registry.lookup(SERVER_JREFERENCE);
 			stubServ.addChatClient(this);
+			//FileReader reader = new FileReader("rmichatlogfile.txt");
+			try
+			{
+				List<String> in = Files.readAllLines(FileSystems.getDefault().getPath("rmichatlogfile.txt"));
+				String histo = "\n";
+				for(String s : in)
+				{
+					histo += (s + "\n");
+				}
+				Message m = new Message(histo + "\n", "Historique", true);
+				this.sendMessage(m);
+			} catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		} catch (RemoteException e)
 		{

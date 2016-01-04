@@ -18,7 +18,6 @@ import java.lang.*;
 public class EmissionClientThread extends Thread
 {
 	// ---------------------------------------------------- Attributs
-	private ChatClientSocket chatClientSocket;
 	private Socket echoSocket;
 
 	// ---------------------------------------------------- Constructeur

@@ -9,6 +9,7 @@ public class Message implements Serializable
 	public String message;
 	public String username;
 	public Timestamp time;
+	public boolean historique;
 
 	/**
 	 *
@@ -20,6 +21,15 @@ public class Message implements Serializable
 		this.message = m;
 		this.username = u;
 		this.time = new Timestamp(System.currentTimeMillis());
+		this.historique = false;
+	}
+	
+	public Message(String m, String u, boolean h)
+	{
+		this.message = m;
+		this.username = u;
+		this.time = new Timestamp(System.currentTimeMillis());
+		this.historique = h;
 	}
 
 
@@ -39,6 +49,11 @@ public class Message implements Serializable
 	public String getUsername()
 	{
 		return username;
+	}
+	
+	public boolean isHistorique()
+	{
+		return historique;
 	}
 
 	/**

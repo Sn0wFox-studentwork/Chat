@@ -1,0 +1,10 @@
+chat.client
+chat.client.rmi
+chat.client.socket
+chat.control
+chat.control.rmi
+chat.control.socket
+chat.protocol
+chat.server.rmi
+chat.server.socket
+chat.view
